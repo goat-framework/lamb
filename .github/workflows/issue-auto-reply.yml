@@ -1,0 +1,32 @@
+name: Issue Auto Reply
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: read
+
+jobs:
+  issue-reply:
+    permissions:
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for Bug or Feature Label
+        if: contains(github.event.label.name, '☢️ Bug') || contains(github.event.label.name, '✏️ Feature')
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hi @${{ github.event.issue.user.login }} 👋
+
+            Thank you for your valuable feedback! If you're interested in contributing, please consider submitting a PR. Ensure your submission includes:
+            - Relevant test cases
+            - Updated documentation
+            - Passing CI checks
+
+            We appreciate your efforts and look forward to your contribution! 🚀

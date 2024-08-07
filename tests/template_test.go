@@ -1,21 +1,21 @@
 package template_test
 
 import (
-    "testing"
-    "strings"
+	"strings"
+	"testing"
 
-    "github.com/goat-framework/lamb/core/template"
+	"github.com/goat-framework/lamb/core/template"
 )
 
 // Path to the example lamb file
 var filepath string = "./example.lamb.html"
 
 func TestCheckLambFile(t *testing.T) {
-    // Attempt to parse the .lamb.html file
-    _, err := template.CheckFile(filepath)
-    if err != nil {
-        t.Fatalf("Error parsing .lamb.html file: %v", err)
-    }
+	// Attempt to parse the .lamb.html file
+	_, err := template.CheckFile(filepath)
+	if err != nil {
+		t.Fatalf("Error parsing .lamb.html file: %v", err)
+	}
 }
 
 func TestCheckUnsupportedFile(t *testing.T) {
@@ -35,12 +35,12 @@ func TestCheckUnsupportedFile(t *testing.T) {
 }
 
 func TestConvertSyntax(t *testing.T) {
-    content, err := template.CheckFile(filepath)
-    if err != nil {
-        t.Fatalf("Error parsing .lamb.html file: %v", err)
-    }
+	content, err := template.CheckFile(filepath)
+	if err != nil {
+		t.Fatalf("Error parsing .lamb.html file: %v", err)
+	}
 
-    expected := `<h1>{{ .title }}</h1>
+	expected := `<h1>{{ .title }}</h1>
 <p>{{ .content }}</p>
 
 {{ if .isLoggedIn }}
@@ -51,20 +51,20 @@ func TestConvertSyntax(t *testing.T) {
 <x-primary-link />
 `
 
-    // Convert the content using ParseLambSyntax
-    result := template.ParseLambSyntax(string(content))
-    if result != expected {
-        t.Errorf("Expected:\n%s\nGot:\n%s", expected, result)
-    }
+	// Convert the content using ParseLambSyntax
+	result := template.ParseLambSyntax(string(content))
+	if result != expected {
+		t.Errorf("Expected:\n%s\nGot:\n%s", expected, result)
+	}
 }
 
 func TestParseFile(t *testing.T) {
-    content, err := template.ParseFile(filepath)
-    if err != nil {
-        t.Fatalf("Error parsing .lamb.html file: %v", err)
-    }
+	content, err := template.ParseFile(filepath)
+	if err != nil {
+		t.Fatalf("Error parsing .lamb.html file: %v", err)
+	}
 
-    expected := `<h1>{{ .title }}</h1>
+	expected := `<h1>{{ .title }}</h1>
 <p>{{ .content }}</p>
 
 {{ if .isLoggedIn }}
@@ -75,21 +75,21 @@ func TestParseFile(t *testing.T) {
 <x-primary-link />
 `
 
-    if content != expected {
-        t.Errorf("Expected:\n%s\nGot:\n%s", expected, content)
-    }
+	if content != expected {
+		t.Errorf("Expected:\n%s\nGot:\n%s", expected, content)
+	}
 }
 
 func TestReplaceComponents(t *testing.T) {
-    content, err := template.CheckFile(filepath)
-    if err != nil {
-        t.Fatalf("Error parsing .lamb.html file: %v", err)
-    }
+	content, err := template.CheckFile(filepath)
+	if err != nil {
+		t.Fatalf("Error parsing .lamb.html file: %v", err)
+	}
 
-    // Convert the content using ParseLambSyntax
-    result, _ := template.ReplaceComponents(string(content))
+	// Convert the content using ParseLambSyntax
+	result, _ := template.ReplaceComponents(string(content))
 
-    if !strings.Contains(result, `<a href="/">`) {
-        t.Errorf("Expected <a href=\"/\"> to be present in the result")
-    }
+	if !strings.Contains(result, `<a href="/">`) {
+		t.Errorf("Expected <a href=\"/\"> to be present in the result")
+	}
 }

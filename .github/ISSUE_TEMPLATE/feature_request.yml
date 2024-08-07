@@ -1,0 +1,63 @@
+name: ✨ Feature Request
+description: Suggest a new idea to help us improve
+title: "✨ [Feature] "
+labels: ["✏️ Feature", "enhancement"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please provide detailed information to help us understand your request.**
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I have checked that this feature is not already requested in the existing Issues
+          required: true
+  - type: input
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: Provide a brief summary of the feature.
+      placeholder: "A brief summary of the feature..."
+    validations:
+      required: true
+  - type: textarea
+    id: feature
+    attributes:
+      label: Describe the Feature
+      description: |
+        Please describe the feature in as much detail as possible, including code and pictures if applicable.
+        This helps us understand and evaluate your request more effectively.
+      placeholder: |
+        Describe your feature request here...
+        - What is the motivation for the feature?
+        - How should it work?
+        - Include any relevant code snippets or images.
+    validations:
+      required: true
+  - type: textarea
+    id: benefits
+    attributes:
+      label: Benefits of the Feature
+      description: Explain the benefits of the feature and how it will improve the project.
+      placeholder: Describe the benefits of the feature...
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative solutions or features you've considered.
+      placeholder: Describe any alternatives you have considered...
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Provide any additional information or context that may be helpful.
+      placeholder: Add any other context or screenshots about the feature request here...
+    validations:
+      required: false

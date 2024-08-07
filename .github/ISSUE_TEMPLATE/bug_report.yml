@@ -1,0 +1,89 @@
+name: 🐛 Bug Feedback
+description: Create a feedback to help us improve
+title: "🐛 [Bug] "
+labels: ["☢️ Bug", "bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please fill in the following details to help us address the issue effectively.**
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before feedback
+      options:
+        - label: I have searched the existing Issues, Discussions, and Google
+          required: true
+        - label: The problem can be consistently reproduced
+          required: false
+        - label: The problem occurred after an upgrade
+          required: false
+  - type: dropdown
+    id: system
+    attributes:
+      label: Operating System
+      options:
+        - Linux
+        - MacOS
+        - Windows
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: goversion
+    attributes:
+      label: Golang Version
+      options:
+        - 1.21.x
+        - 1.20.x
+        - 1.19.x
+        - 1.18.x
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Appliance Surge Version
+      placeholder: 0.0.1
+    validations:
+      required: true
+  - type: textarea
+    id: describe
+    attributes:
+      label: Describe the Problem
+      description: Provide a detailed description of the issue.
+      placeholder: |
+          1. In this environment...
+          2. With this configuration...
+          3. Running '...'
+          4. Encounter this error...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction Steps or Code
+      description: Include steps or code to reproduce the issue.
+      placeholder: |
+          ```go
+          // Your code here
+          ```
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: Describe what you expected to happen.
+      placeholder: Describe the expected behavior...
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs or Screenshots
+      description: Attach relevant logs or screenshots to help identify the problem.
+      placeholder: Paste logs or add screenshots...
+    validations:
+      required: false
