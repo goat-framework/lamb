@@ -48,7 +48,8 @@ func TestConvertSyntax(t *testing.T) {
 {{ else }}
     <p>Please log in.</p>
 {{ end }}
-<x-primary-link />
+<ui-primary-link />
+<ui-container>Test</ui-container>
 `
 
 	// Convert the content using ParseLambSyntax
@@ -72,7 +73,8 @@ func TestParseFile(t *testing.T) {
 {{ else }}
     <p>Please log in.</p>
 {{ end }}
-<x-primary-link />
+<ui-primary-link />
+<ui-container>Test</ui-container>
 `
 
 	if content != expected {
@@ -91,5 +93,19 @@ func TestReplaceComponents(t *testing.T) {
 
 	if !strings.Contains(result, `<a href="/">`) {
 		t.Errorf("Expected <a href=\"/\"> to be present in the result")
+	}
+}
+
+func TestReplaceWrappedComponents(t *testing.T) {
+	content, err := template.CheckFile(filepath)
+	if err != nil {
+		t.Fatalf("Error parsing .lamb.html file: %v", err)
+	}
+
+	// Convert the content using replace components
+	result, _ := template.ReplaceComponents(string(content))
+
+	if !strings.Contains(result, `<div class="container">Test</div>`) {
+		t.Errorf("Expected <div class=\"container\">Test</div> to be present in the result.\nGot:\n%s", result)
 	}
 }

@@ -39,7 +39,7 @@ func ParseLambSyntax(content string) string {
 }
 
 func ReplaceComponents(content string) (string, error) {
-	componentRegex := regexp.MustCompile(`<x-([\w-]+)\s*/>`)
+	componentRegex := regexp.MustCompile(`<ui-([\w-]+)\s*/>`)
 	matches := componentRegex.FindAllStringSubmatch(content, -1)
 
 	for _, match := range matches {
@@ -50,6 +50,23 @@ func ReplaceComponents(content string) (string, error) {
 			return "", err
 		}
 		content = strings.Replace(content, match[0], componentContent, 1)
+	}
+
+	// Handle wrapped components
+	wrappedComponentRegex := regexp.MustCompile(`<ui-([\w-]+)>(.*?)</ui-[\w-]+>`)
+	matches = wrappedComponentRegex.FindAllStringSubmatch(content, -1)
+
+	for _, match := range matches {
+		componentName := match[1]
+		innerContent := match[2]
+		componentFile := fmt.Sprintf("components/%s.lamb.html", componentName)
+		wrapperContent, err := ParseFile(componentFile)
+		if err != nil {
+			return "", err
+		}
+		// Replace the <ui-slot /> placeholder with the wrapped content
+		wrapperContent = strings.Replace(wrapperContent, "<ui-slot />", innerContent, 1)
+		content = strings.Replace(content, match[0], wrapperContent, 1)
 	}
 
 	return content, nil
