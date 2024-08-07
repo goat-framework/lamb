@@ -1,0 +1,8 @@
+<h1>{{ title }}</h1>
+<p>{{ content }}</p>
+
+@if isLoggedIn
+    <p>Welcome, {{ user }}</p>
+@else
+    <p>Please log in.</p>
+@endif
