@@ -41,7 +41,7 @@ Easier on the eyes right?
 Having troubles reusing components in your application?
 Check out the ui components.
 
-_main.html_
+_main.lamb.html_
 ```
 <form>
   <ui-input />
@@ -49,7 +49,7 @@ _main.html_
 </form>
 ```
 
-_components/input.html_
+_components/input.lamb.html_
 ```
 <input type="text" />
 ```
@@ -59,5 +59,30 @@ _compiled_
 <form>
   <input type="text" />
   <button>Submit</button>
+</form>
+```
+
+## Wrap UI Components
+
+Need to wrap some content in a custom component?
+
+_main.lamb.html_
+```
+<form>
+  <input />
+  <ui-button>Submit</ui-button>
+</form>
+```
+
+_components/button.lamb.html_
+```
+<button class="btn primary"><slot /></button>
+```
+
+_compiled_
+```
+<form>
+  <input />
+  <button class="btn primary">Submit</button>
 </form>
 ```
