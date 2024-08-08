@@ -12,7 +12,7 @@
 
 Intuitive templating engine for Go!
 
-## Examples
+## Directives
 
 These new directives clean up your templates making them easy as pie to read!
 
@@ -35,6 +35,8 @@ These directives compile directly into the standard libary's syntax!
 ```
 
 Easier on the eyes right?
+
+## UI Components
 
 Having troubles reusing components in your application?
 Check out the ui components.
