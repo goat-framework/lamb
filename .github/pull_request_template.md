@@ -1,6 +1,6 @@
 ## 📑 Description
 
-Closes https://github.com/Appliance-Surge/Appliance-Surge/issues/?
+Closes https://github.com/goat-framework/lamb/issues/?
 
 <!-- Please add Review Ready tag when the PR is good to go -->
 
