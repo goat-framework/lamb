@@ -86,3 +86,53 @@ _compiled_
   <button class="btn primary">Submit</button>
 </form>
 ```
+
+## Create Themes With Ease
+
+Let's mix and match to create an awesome form!
+
+_main.lamb.html_
+```
+<ui-form>
+  <ui-label>Email<ui-label>
+  <ui-input />
+  <ui-label>Name<ui-label>
+  <ui-input />
+  <ui-button>Submit</ui-button>
+</ui-form>
+```
+
+_components/form.lamb.html_
+```
+<form class="flex flex-col space-y-4">
+  <slot />
+</form>
+```
+
+_components/label.lamb.html_
+```
+<label class="text-gray-800 font-bold"><slot /></label>
+```
+
+_components/input.lamb.html_
+```
+<input type="text" class="rounded-md border-blue-500" />
+```
+
+_components/button.lamb.html_
+```
+<button class="bg-blue-500 rounded-lg text-white">
+  <slot />
+</button>
+```
+
+_compiled_
+```
+<form class="flex flex-col space-y-4">
+  <label class="text-gray-800 font-bold">Email</label>
+  <input type="text" class="rounded-md border-blue-500" />
+  <label class="text-gray-800 font-bold">Name</label>
+  <input type="text" class="rounded-md border-blue-500" />
+  <button class="bg-blue-500 rounded-lg text-white">Submit</button>
+</form>
+```
