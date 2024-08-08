@@ -16,13 +16,13 @@ Intuitive templating engine for Go!
 
 These new directives clean up your templates making them easy as pie to read!
 
-`<h1>Title</h1>
+```<h1>Title</h1>
 @if LoggedIn
 <p>Hello {{ User }}</p>
 @else
 <a href="login">Login</a>
 @end
-`
+/```
 
 These directives compile directly into the standard libary's syntax!
 
