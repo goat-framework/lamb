@@ -22,7 +22,7 @@ These new directives clean up your templates making them easy as pie to read!
 @else
 <a href="login">Login</a>
 @end
-/```
+```
 
 These directives compile directly into the standard libary's syntax!
 
