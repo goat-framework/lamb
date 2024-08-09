@@ -1,7 +1,6 @@
 package template
 
 import (
-	"regexp"
 	"strings"
 )
 
@@ -88,31 +87,4 @@ func replaceWrappedComponents(component *WrappedUIComponent, content string) (st
 	updatedContent := strings.Replace(componentContent, "<slot />", component.InnerContent, 1)
 	updatedContent = strings.Replace(content, component.Element, updatedContent, 1)
 	return updatedContent, nil
-}
-
-func applyAttributesDirective(content string, parentAttributes Attributes) string {
-	// Regex to find @attributes directive
-	regex := regexp.MustCompile(`@attributes\(([^)]+)\)`)
-
-	return regex.ReplaceAllStringFunc(content, func(match string) string {
-		// Extract the attributes string within @attributes(...)
-		attributesString := regex.FindStringSubmatch(match)[1]
-
-		// Parse the attributes string into an Attributes map
-		attributePairs := strings.Split(attributesString, ",")
-		attributes := make(Attributes)
-		for _, pair := range attributePairs {
-			parts := strings.SplitN(strings.TrimSpace(pair), ":", 2)
-			if len(parts) == 2 {
-				key := strings.TrimSpace(parts[0])
-				value := strings.Trim(strings.TrimSpace(parts[1]), `"`)
-				attributes[key] = value
-			}
-		}
-		// Merge the attributes with parent attributes
-		mergedAttributes := parentAttributes.mergeAttributes(attributes)
-
-		// Replace the @attributes(...) directive with the merged attributes
-		return mergedAttributes.toString()
-	})
 }
