@@ -57,6 +57,8 @@ func replaceSelfClosingComponents(component *SelfClosingUIComponent, content str
 		return "", err
 	}
 
+	componentContent = applyAttributesDirective(componentContent, *component.Attributes)
+
 	updatedContent := strings.Replace(content, component.Element, componentContent, 1)
 	return updatedContent, nil
 }
@@ -78,6 +80,8 @@ func replaceWrappedComponents(component *WrappedUIComponent, content string) (st
 	if err != nil {
 		return "", err
 	}
+
+	componentContent = applyAttributesDirective(componentContent, *component.Attributes)
 
 	// Replace the <ui-slot /> placeholder with the wrapped content
 	updatedContent := strings.Replace(componentContent, "<slot />", component.InnerContent, 1)

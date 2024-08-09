@@ -8,12 +8,55 @@ import (
 var exampleHtml string = "<h1>Title</h1><p>some text</p><ui-link /><ui-button>Submit</ui-button><ui-input /><ui-container><div>Container</div></ui-container>"
 
 func TestFindSelfClosingUIComponents(t *testing.T) {
-	expected := [][]string{
-		{"<ui-link />", "link"},
-		{"<ui-input />", "input"},
+	expected := []string{
+		"<ui-link />",
+		"<ui-input />",
 	}
 
-	result := findSelfClosingUIComponents(exampleHtml)
+	result := findSelfClosingUIElements(exampleHtml)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, but got %v", expected, result)
+	}
+}
+
+func TestFindSelfClosingUIComponentsWithAttributes(t *testing.T) {
+	expected := []string{
+		"<ui-link class=\"link blue brown\" id=\"primary\" />",
+		"<ui-button class=\"button\" />",
+	}
+
+	example := `<h1>Title</h1><ui-link class="link blue brown" id="primary" /><ui-button class="button" /><footer>end</footer>`
+
+	result := findSelfClosingUIElements(example)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, but got %v", expected, result)
+	}
+}
+
+func TestFindSelfClosingWithinWrapped(t *testing.T) {
+	expected := []string{
+		"<ui-link />",
+	}
+
+	example := `<h1>title</h1><ui-container><ui-link /><p>Some Text</p></ui-container><ui-button>Submit</ui-button>`
+
+	result := findSelfClosingUIElements(example)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, but got %v", expected, result)
+	}
+}
+
+func TestFindSelfClosingWithinWrappedWithAttributes(t *testing.T) {
+	expected := []string{
+		"<ui-link class=\"primary\" />",
+	}
+
+	example := `<h1>title</h1><ui-container class="wrapper"><ui-link class="primary" /></ui-container>`
+
+	result := findSelfClosingUIElements(example)
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("Expected %v, but got %v", expected, result)
@@ -21,12 +64,54 @@ func TestFindSelfClosingUIComponents(t *testing.T) {
 }
 
 func TestFindWrappedUIComponents(t *testing.T) {
-	expected := [][]string{
-		{"<ui-button>Submit</ui-button>", "button", "Submit"},
-		{"<ui-container><div>Container</div></ui-container>", "container", "<div>Container</div>"},
+	expected := []string{
+		"<ui-button>Submit</ui-button>",
+		"<ui-container><div>Container</div></ui-container>",
 	}
 
-	result := findWrappedUIComponents(exampleHtml)
+	result := findWrappedUIElements(exampleHtml)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, but got %v", expected, result)
+	}
+}
+
+func TestFindWrappedUIComponentsWithAttributes(t *testing.T) {
+	expected := []string{
+		"<ui-container class=\"wrapper\">Content</ui-container>",
+		"<ui-button class=\"btn\" type=\"submit\">Submit</ui-button>",
+	}
+
+	example := `<h1>Hello</h1><ui-container class="wrapper">Content</ui-container><ui-button class="btn" type="submit">Submit</ui-button>`
+
+	result := findWrappedUIElements(example)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, but got %v", expected, result)
+	}
+}
+
+func TestFindWrappedComponentsWithSelfClosingWithin(t *testing.T) {
+	expected := []string{
+		"<ui-container><ui-link /><p>Some Text</p></ui-container>",
+		"<ui-button>Submit</ui-button>",
+	}
+	example := `<h1>title</h1><ui-container><ui-link /><p>Some Text</p></ui-container><ui-button>Submit</ui-button>`
+
+	result := findWrappedUIElements(example)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, but got %v", expected, result)
+	}
+}
+
+func TestFindWrappedComponentsWithAttributesWithSelfClosing(t *testing.T) {
+	expected := []string{
+		"<ui-container class=\"wrapper\"><ui-link class=\"primary\" /></ui-container>",
+	}
+	example := `<h1>title</h1><ui-container class="wrapper"><ui-link class="primary" /></ui-container>`
+
+	result := findWrappedUIElements(example)
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("Expected %v, but got %v", expected, result)
@@ -34,7 +119,7 @@ func TestFindWrappedUIComponents(t *testing.T) {
 }
 
 func TestGetComponentInnerContent(t *testing.T) {
-	components := findWrappedUIComponents(exampleHtml)
+	components := findWrappedUIElements(exampleHtml)
 
 	expected := []string{"Submit", "<div>Container</div>"}
 
@@ -46,7 +131,7 @@ func TestGetComponentInnerContent(t *testing.T) {
 }
 
 func TestCreateComponentUINames(t *testing.T) {
-	components := findSelfClosingUIComponents(exampleHtml)
+	components := findSelfClosingUIElements(exampleHtml)
 
 	expected := []string{"link", "input"}
 
@@ -58,7 +143,7 @@ func TestCreateComponentUINames(t *testing.T) {
 }
 
 func TestCreateUIComponentFilePaths(t *testing.T) {
-	components := findSelfClosingUIComponents(exampleHtml)
+	components := findSelfClosingUIElements(exampleHtml)
 	names := createUIComponentNames(components)
 
 	expected := []string{"components/link.lamb.html", "components/input.lamb.html"}

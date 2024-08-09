@@ -20,6 +20,7 @@ type SelfClosingUIComponent struct {
 	ComponentName     string
 	ComponentFilePath string
 	Element           string
+	Attributes        *Attributes
 }
 
 // Represents a wrapped component
@@ -40,6 +41,7 @@ type WrappedUIComponent struct {
 	ComponentFilePath string
 	InnerContent      string
 	Element           string
+	Attributes        *Attributes
 }
 
 // Gets all of the self closing components
@@ -52,18 +54,19 @@ type WrappedUIComponent struct {
 //
 // Since: 0.1.0
 func getSelfClosingUIComponents(content string) []SelfClosingUIComponent {
-	components := findSelfClosingUIComponents(content)
-	elements := getComponentElements(components)
-	names := createUIComponentNames(components)
+	elements := findSelfClosingUIElements(content)
+	names := createUIComponentNames(elements)
 	paths := createUIComponentFilePaths(names)
 
 	var structs []SelfClosingUIComponent
 
-	for i := range components {
+	for i := range elements {
+		attributes := getAttributes(elements[i])
 		structs = append(structs, SelfClosingUIComponent{
 			ComponentName:     names[i],
 			ComponentFilePath: paths[i],
 			Element:           elements[i],
+			Attributes:        &attributes,
 		})
 	}
 
@@ -80,92 +83,78 @@ func getSelfClosingUIComponents(content string) []SelfClosingUIComponent {
 //
 // Since: 0.1.0
 func getWrappedUIComponents(content string) []WrappedUIComponent {
-	components := findWrappedUIComponents(content)
-	elements := getComponentElements(components)
-	names := createUIComponentNames(components)
-	contents := getComponentInnerContent(components)
+	elements := findWrappedUIElements(content)
+	names := createUIComponentNames(elements)
+	contents := getComponentInnerContent(elements)
 	paths := createUIComponentFilePaths(names)
 
 	var structs []WrappedUIComponent
 
-	for i := range components {
+	for i := range elements {
+		attributes := getAttributes(elements[i])
 		structs = append(structs, WrappedUIComponent{
 			ComponentName:     names[i],
 			ComponentFilePath: paths[i],
 			InnerContent:      contents[i],
 			Element:           elements[i],
+			Attributes:        &attributes,
 		})
 	}
 
 	return structs
 }
 
-// Looks for self closing component syntax
+// Looks for self closing element syntax
 //
 // Params:
 // - content (string): content to parse
 //
 // Returns:
-// - [][]string: list of listed components
-// ex: {{'<ui-link />', 'link',}, {'<ui-button />', 'button',},}
+// - []string: list of elements
 //
 // Since: 0.1.0
-func findSelfClosingUIComponents(content string) [][]string {
-	regex := regexp.MustCompile(`<ui-([\w-]+)\s*/>`)
-	matches := regex.FindAllStringSubmatch(content, -1)
+func findSelfClosingUIElements(content string) []string {
+	regex := regexp.MustCompile(`<ui-[\w-]+\s*[^>]*\/>`)
+	matches := regex.FindAllString(content, -1)
 	return matches
 }
 
-// Looks for wrapped component syntax
+// Looks for wrapped element syntax
 //
 // Params:
 // - content (string): content to parse
 //
 // Returns:
-// - [][]string: list of listed components
-// ex: {{'<ui-button>submit</ui-button>', 'button', 'submit',},}
+// - []string: list of elements
 //
 // Since: 0.1.0
-func findWrappedUIComponents(content string) [][]string {
-	regex := regexp.MustCompile(`<ui-([\w-]+)>(.*?)</ui-[\w-]+>`)
-	matches := regex.FindAllStringSubmatch(content, -1)
+func findWrappedUIElements(content string) []string {
+	regex := regexp.MustCompile(`<ui-[\w-]+\b[^/>]*>.*?</ui-[\w-]+>`)
+	matches := regex.FindAllString(content, -1)
 	return matches
-}
-
-// Grabs component's base element
-//
-// Params:
-// - components ([][]string): the listed component
-//
-// Returns:
-// []string: list of base elements
-//
-// Since 0.1.0
-func getComponentElements(components [][]string) []string {
-	var elements []string
-	for _, component := range components {
-		element := component[0]
-		elements = append(elements, element)
-	}
-
-	return elements
 }
 
 // Grabs component's inner content
 // Must be a wrapped component
 //
 // Params:
-// - components ([][]string): the listed component
+// - elements ([]string): list of elements
 //
 // Returns:
 // []string: list of inner contents
 //
 // Since: 0.1.0
-func getComponentInnerContent(components [][]string) []string {
+func getComponentInnerContent(elements []string) []string {
 	var contents []string
-	for _, component := range components {
-		content := component[2]
-		contents = append(contents, content)
+	regex := regexp.MustCompile(`<ui-[\w-]+[^>]*>(.*?)</ui-[\w-]+>`)
+
+	for _, element := range elements {
+		match := regex.FindStringSubmatch(element)
+		if len(match) > 1 {
+			contents = append(contents, match[1])
+		} else {
+			contents = append(contents, "")
+		}
 	}
 
 	return contents
@@ -174,17 +163,21 @@ func getComponentInnerContent(components [][]string) []string {
 // Grabs component names
 //
 // Params:
-// - components ([][]string): the listed component
+// - elements ([]string): list of elements
 //
 // Returns:
 // []string: list of names
 //
 // Since: 0.1.0
-func createUIComponentNames(components [][]string) []string {
+func createUIComponentNames(elements []string) []string {
 	var names []string
-	for _, component := range components {
-		name := component[1]
-		names = append(names, name)
+	regex := regexp.MustCompile(`<ui-([\w-]+)`)
+
+	for _, element := range elements {
+		match := regex.FindStringSubmatch(element)
+		if len(match) > 1 {
+			names = append(names, match[1])
+		}
 	}
 
 	return names
