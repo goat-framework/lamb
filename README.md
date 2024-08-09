@@ -136,3 +136,31 @@ _compiled_
   <button class="bg-blue-500 rounded-lg text-white">Submit</button>
 </form>
 ```
+
+## Pass Attributes Down To Components
+
+My labels and inputs need special attributes for each component!
+
+Here's how to implement that.
+
+_main.lamb.html_
+```
+<ui-label for="email">Email</ui-label>
+<ui-input id="email" />
+```
+
+_label.lamb.html_
+```
+<label @attributes("class": "text-gray-800 font-bold")><slot /></label>
+```
+
+_input.lamb.html_
+```
+<input @attributes("type": "text", "class": "rounded-md border-blue-500") />
+```
+
+_compiled_
+```
+<label for="email" class="text-gray-800 font-bold">Email</label>
+<input id="email" type="text" class="rounded-md border-blue-500" />
+```
