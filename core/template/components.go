@@ -129,7 +129,7 @@ func findSelfClosingUIElements(content string) []string {
 //
 // Since: 0.1.0
 func findWrappedUIElements(content string) []string {
-	regex := regexp.MustCompile(`<ui-[\w-]+>.*?</ui-[\w-]+>`)
+	regex := regexp.MustCompile(`<ui-[\w-]+\b[^/>]*>.*?</ui-[\w-]+>`)
 	matches := regex.FindAllString(content, -1)
 	return matches
 }
