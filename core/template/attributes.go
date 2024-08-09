@@ -1,7 +1,9 @@
 package template
 
 import (
+	"fmt"
 	"regexp"
+	"strings"
 )
 
 // A map of key value pairs for attributes
@@ -23,7 +25,7 @@ type Attributes map[string]string
 func getAttributes(element string) Attributes {
 	attributes := make(Attributes)
 
-    element = getRootElement(element)
+	element = getRootElement(element)
 
 	regex := regexp.MustCompile(`(\w+)="([^"]*)"`)
 	matches := regex.FindAllStringSubmatch(element, -1)
@@ -47,11 +49,11 @@ func getAttributes(element string) Attributes {
 //
 // Since: 0.1.0
 func getRootElement(element string) string {
-    regex := regexp.MustCompile(`<ui-[\w-]+(?:\s[^>]*)?/?>`)
+	regex := regexp.MustCompile(`<ui-[\w-]+(?:\s[^>]*)?/?>`)
 
-    match := regex.FindString(element)
+	match := regex.FindString(element)
 
-    return match
+	return match
 }
 
 // Merges another Attributes map into the current one.
@@ -78,4 +80,12 @@ func (a Attributes) mergeAttributes(other Attributes) Attributes {
 	}
 
 	return a
+}
+
+func (a Attributes) toString() string {
+	parts := make([]string, 0, len(a))
+	for key, value := range a {
+		parts = append(parts, fmt.Sprintf(`%s="%s"`, key, value))
+	}
+	return strings.Join(parts, " ")
 }

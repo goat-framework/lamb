@@ -1,8 +1,8 @@
 package template
 
 import (
+	"reflect"
 	"testing"
-    "reflect"
 )
 
 func TestGetAttributes(t *testing.T) {
@@ -24,11 +24,11 @@ func TestGetAttributes(t *testing.T) {
 }
 
 func TestGetRootElement(t *testing.T) {
-    element := `<ui-div class="container"><button class="button"></button></ui-div>`
+	element := `<ui-div class="container"><button class="button"></button></ui-div>`
 
-    result := getRootElement(element)
+	result := getRootElement(element)
 
-    expected := `<ui-div class="container">`
+	expected := `<ui-div class="container">`
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("Expected %v, but got %v", expected, result)
