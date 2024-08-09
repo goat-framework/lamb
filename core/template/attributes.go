@@ -23,6 +23,8 @@ type Attributes map[string]string
 func getAttributes(element string) Attributes {
 	attributes := make(Attributes)
 
+    element = getRootElement(element)
+
 	regex := regexp.MustCompile(`(\w+)="([^"]*)"`)
 	matches := regex.FindAllStringSubmatch(element, -1)
 
@@ -35,8 +37,26 @@ func getAttributes(element string) Attributes {
 	return attributes
 }
 
+// Gets the root UI element tag
+//
+// Params:
+// - element (string): element to pull tag from
+//
+// Returns:
+// - string: the first ui tag
+//
+// Since: 0.1.0
+func getRootElement(element string) string {
+    regex := regexp.MustCompile(`<ui-[\w-]+(?:\s[^>]*)?/?>`)
+
+    match := regex.FindString(element)
+
+    return match
+}
+
 // Merges another Attributes map into the current one.
 // If a key exists in both maps, the other map will override.
+// If key is class, then combine them.
 //
 // Receiver:
 // a (Attributes): current attributes map

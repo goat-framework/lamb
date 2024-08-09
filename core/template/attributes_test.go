@@ -2,10 +2,11 @@ package template
 
 import (
 	"testing"
+    "reflect"
 )
 
 func TestGetAttributes(t *testing.T) {
-	element := `<input class="text-blue-500 rounded-lg" type="email" name="email" />`
+	element := `<ui-input class="text-blue-500 rounded-lg" type="email" name="email" />`
 
 	attributes := getAttributes(element)
 
@@ -13,6 +14,34 @@ func TestGetAttributes(t *testing.T) {
 		"class": "text-blue-500 rounded-lg",
 		"type":  "email",
 		"name":  "email",
+	}
+
+	for key, expectedValue := range expectedAttributes {
+		if value, exists := attributes[key]; !exists || value != expectedValue {
+			t.Errorf("Expected attribute %s=\"%s\", but got %s\"%s\"", key, expectedValue, key, value)
+		}
+	}
+}
+
+func TestGetRootElement(t *testing.T) {
+    element := `<ui-div class="container"><button class="button"></button></ui-div>`
+
+    result := getRootElement(element)
+
+    expected := `<ui-div class="container">`
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, but got %v", expected, result)
+	}
+}
+
+func TestNestGetAttributes(t *testing.T) {
+	element := `<ui-div class="container"><button class="button"></button></ui-div>`
+
+	attributes := getAttributes(element)
+
+	expectedAttributes := map[string]string{
+		"class": "container",
 	}
 
 	for key, expectedValue := range expectedAttributes {

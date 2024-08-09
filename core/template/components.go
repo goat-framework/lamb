@@ -20,6 +20,7 @@ type SelfClosingUIComponent struct {
 	ComponentName     string
 	ComponentFilePath string
 	Element           string
+	Attributes        *Attributes
 }
 
 // Represents a wrapped component
@@ -40,6 +41,7 @@ type WrappedUIComponent struct {
 	ComponentFilePath string
 	InnerContent      string
 	Element           string
+	Attributes        *Attributes
 }
 
 // Gets all of the self closing components
@@ -60,10 +62,12 @@ func getSelfClosingUIComponents(content string) []SelfClosingUIComponent {
 	var structs []SelfClosingUIComponent
 
 	for i := range components {
+		attributes := getAttributes(elements[i])
 		structs = append(structs, SelfClosingUIComponent{
 			ComponentName:     names[i],
 			ComponentFilePath: paths[i],
 			Element:           elements[i],
+			Attributes:        &attributes,
 		})
 	}
 
@@ -89,11 +93,13 @@ func getWrappedUIComponents(content string) []WrappedUIComponent {
 	var structs []WrappedUIComponent
 
 	for i := range components {
+		attributes := getAttributes(elements[i])
 		structs = append(structs, WrappedUIComponent{
 			ComponentName:     names[i],
 			ComponentFilePath: paths[i],
 			InnerContent:      contents[i],
 			Element:           elements[i],
+			Attributes:        &attributes,
 		})
 	}
 
