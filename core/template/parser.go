@@ -2,6 +2,9 @@ package template
 
 import (
 	"strings"
+    "os"
+    "fmt"
+    "path/filepath"
 )
 
 // Parse the lamb file
@@ -37,6 +40,40 @@ func ParseLamb(filepath string) (string, error) {
 	}
 
 	return content, nil
+}
+
+func CompileLamb(filePath string) error {
+	// Parse the file to get the content
+	parsedContent, err := ParseLamb(filePath)
+	if err != nil {
+		return err
+	}
+
+	// Define the .cache folder path
+	cacheDir := ".cache"
+
+	// Create the .cache directory if it doesn't exist
+	if _, err := os.Stat(cacheDir); os.IsNotExist(err) {
+		err = os.Mkdir(cacheDir, os.ModePerm)
+		if err != nil {
+			return fmt.Errorf("failed to create .cache directory: %w", err)
+		}
+	}
+
+	// Remove the ".lamb" from the filename and replace it with ".html"
+	outputFileName := strings.TrimSuffix(filepath.Base(filePath), ".lamb.html") + ".html"
+
+	// Define the path for the compiled .html file
+	outputFilePath := filepath.Join(cacheDir, outputFileName)
+
+	// Write the parsed content to the .html file in the .cache directory
+	err = os.WriteFile(outputFilePath, []byte(parsedContent), 0644)
+	if err != nil {
+		return fmt.Errorf("failed to write compiled file: %w", err)
+	}
+
+	fmt.Printf("Compiled file written to %s\n", outputFilePath)
+	return nil
 }
 
 // Replace self closing component syntax
