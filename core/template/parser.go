@@ -14,23 +14,23 @@ import (
 // - error: if something goes wrong
 //
 // Since: 0.1.0
-func ParseLamb(filepath string) (string, error) {
+func ParseLamb(filepath string, componentDir string) (string, error) {
 	content, err := getContent(filepath)
 	if err != nil {
 		return "", err
 	}
 
 	content = replaceSyntax(content)
-	closingComponents := getSelfClosingUIComponents(content)
+	closingComponents := getSelfClosingUIComponents(content, componentDir)
 	for _, closingComponent := range closingComponents {
-		content, err = replaceSelfClosingComponents(&closingComponent, content)
+		content, err = replaceSelfClosingComponents(&closingComponent, content, componentDir)
 		if err != nil {
 			return "", err
 		}
 	}
-	wrappedComponents := getWrappedUIComponents(content)
+	wrappedComponents := getWrappedUIComponents(content, componentDir)
 	for _, wrappedComponent := range wrappedComponents {
-		content, err = replaceWrappedComponents(&wrappedComponent, content)
+		content, err = replaceWrappedComponents(&wrappedComponent, content, componentDir)
 		if err != nil {
 			return "", err
 		}
@@ -51,8 +51,8 @@ func ParseLamb(filepath string) (string, error) {
 // - error: if something goes wrong
 //
 // Since: 0.1.0
-func replaceSelfClosingComponents(component *SelfClosingUIComponent, content string) (string, error) {
-	componentContent, err := ParseLamb(component.ComponentFilePath)
+func replaceSelfClosingComponents(component *SelfClosingUIComponent, content string, componentDir string) (string, error) {
+	componentContent, err := ParseLamb(component.ComponentFilePath, componentDir)
 	if err != nil {
 		return "", err
 	}
@@ -75,8 +75,8 @@ func replaceSelfClosingComponents(component *SelfClosingUIComponent, content str
 // - error: if something goes wrong
 //
 // Since: 0.1.0
-func replaceWrappedComponents(component *WrappedUIComponent, content string) (string, error) {
-	componentContent, err := ParseLamb(component.ComponentFilePath)
+func replaceWrappedComponents(component *WrappedUIComponent, content string, componentDir string) (string, error) {
+	componentContent, err := ParseLamb(component.ComponentFilePath, componentDir)
 	if err != nil {
 		return "", err
 	}

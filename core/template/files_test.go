@@ -1,6 +1,8 @@
 package template
 
 import (
+	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -43,5 +45,16 @@ func TestGetContent(t *testing.T) {
 
 	if !strings.Contains(result, expected) {
 		t.Errorf("Expected content to contain %s, but got %s", expected, result)
+	}
+}
+
+func TestGetLibraryRoot(t *testing.T) {
+	_, b, _, _ := runtime.Caller(0)
+	expectedRootDir := filepath.Join(filepath.Dir(b), "../..")
+
+	actualRootDir := getLibraryRoot()
+
+	if filepath.Clean(actualRootDir) != filepath.Clean(expectedRootDir) {
+		t.Errorf("expected root directory %s, but got %s", expectedRootDir, actualRootDir)
 	}
 }

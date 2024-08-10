@@ -148,7 +148,7 @@ func TestCreateUIComponentFilePaths(t *testing.T) {
 
 	expected := []string{"components/link.lamb.html", "components/input.lamb.html"}
 
-	result := createUIComponentFilePaths(names)
+	result := createUIComponentFilePaths("components", names)
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("Expected %v, but got %v", expected, result)

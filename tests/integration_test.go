@@ -1,7 +1,5 @@
 package integration_test
 
-/*
-
 import (
 	"testing"
 
@@ -11,12 +9,9 @@ import (
 // Path to the example lamb file
 var filepath string = "./example.lamb.html"
 
-func TestParseLamb(t *testing.T) {
-    content, err := template.ParseLamb(filepath)
+func TestCompileLamb(t *testing.T) {
+	err := template.Compile(filepath, "components")
 	if err != nil {
 		t.Errorf("Expected no error, but got error: %s", err.Error())
 	}
-
-    t.Errorf(content)
 }
-*/

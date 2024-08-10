@@ -53,10 +53,10 @@ type WrappedUIComponent struct {
 // []SelfClosingUIComponents: list of self closing components
 //
 // Since: 0.1.0
-func getSelfClosingUIComponents(content string) []SelfClosingUIComponent {
+func getSelfClosingUIComponents(content string, componentDir string) []SelfClosingUIComponent {
 	elements := findSelfClosingUIElements(content)
 	names := createUIComponentNames(elements)
-	paths := createUIComponentFilePaths(names)
+	paths := createUIComponentFilePaths(componentDir, names)
 
 	var structs []SelfClosingUIComponent
 
@@ -82,11 +82,11 @@ func getSelfClosingUIComponents(content string) []SelfClosingUIComponent {
 // - []WrappedUIComponent: list of wrapped components
 //
 // Since: 0.1.0
-func getWrappedUIComponents(content string) []WrappedUIComponent {
+func getWrappedUIComponents(content string, componentDir string) []WrappedUIComponent {
 	elements := findWrappedUIElements(content)
 	names := createUIComponentNames(elements)
 	contents := getComponentInnerContent(elements)
-	paths := createUIComponentFilePaths(names)
+	paths := createUIComponentFilePaths(componentDir, names)
 
 	var structs []WrappedUIComponent
 
@@ -192,10 +192,10 @@ func createUIComponentNames(elements []string) []string {
 // - []string: list of filepaths to components
 //
 // Since: 0.1.0
-func createUIComponentFilePaths(names []string) []string {
+func createUIComponentFilePaths(baseDir string, names []string) []string {
 	var paths []string
 	for _, name := range names {
-		path := fmt.Sprintf("components/%s.lamb.html", name)
+		path := fmt.Sprintf("%s/%s.lamb.html", baseDir, name)
 		paths = append(paths, path)
 	}
 	return paths
