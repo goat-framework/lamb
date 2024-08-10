@@ -42,6 +42,7 @@ type WrappedUIComponent struct {
 	InnerContent      string
 	Element           string
 	Attributes        *Attributes
+	ClosingTag        string
 }
 
 // Gets all of the self closing components
@@ -129,7 +130,7 @@ func findSelfClosingUIElements(content string) []string {
 //
 // Since: 0.1.0
 func findWrappedUIElements(content string) []string {
-	regex := regexp.MustCompile(`<ui-[\w-]+\b[^/>]*>.*?</ui-[\w-]+>`)
+	regex := regexp.MustCompile(`(?s)<ui-[\w-]+\b[^/>]*>.*?</ui-[\w-]+>`)
 	matches := regex.FindAllString(content, -1)
 	return matches
 }
@@ -146,7 +147,7 @@ func findWrappedUIElements(content string) []string {
 // Since: 0.1.0
 func getComponentInnerContent(elements []string) []string {
 	var contents []string
-	regex := regexp.MustCompile(`<ui-[\w-]+[^>]*>(.*?)</ui-[\w-]+>`)
+	regex := regexp.MustCompile(`(?s)<ui-[\w-]+[^>]*>(.*?)</ui-[\w-]+>`)
 
 	for _, element := range elements {
 		match := regex.FindStringSubmatch(element)

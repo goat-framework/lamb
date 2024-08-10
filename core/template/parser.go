@@ -83,8 +83,11 @@ func replaceWrappedComponents(component *WrappedUIComponent, content string, com
 
 	componentContent = applyAttributesDirective(componentContent, *component.Attributes)
 
-	// Replace the <ui-slot /> placeholder with the wrapped content
+	// Replace the <slot /> placeholder with the wrapped content
 	updatedContent := strings.Replace(componentContent, "<slot />", component.InnerContent, 1)
+
+	// Replace the entire wrapped component block
 	updatedContent = strings.Replace(content, component.Element, updatedContent, 1)
+
 	return updatedContent, nil
 }
