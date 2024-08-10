@@ -76,6 +76,24 @@ func TestFindWrappedUIComponents(t *testing.T) {
 	}
 }
 
+func TestFindWrappedUIComponentsBlock(t *testing.T) {
+	expected := []string{
+		`<ui-wrapper>
+    Some wrapped content
+</ui-wrapper>`,
+	}
+
+	example := `<h1></h1><ui-wrapper>
+    Some wrapped content
+</ui-wrapper>`
+
+	result := findWrappedUIElements(example)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, but got %v", expected, result)
+	}
+}
+
 func TestFindWrappedUIComponentsWithAttributes(t *testing.T) {
 	expected := []string{
 		"<ui-container class=\"wrapper\">Content</ui-container>",
@@ -124,6 +142,22 @@ func TestGetComponentInnerContent(t *testing.T) {
 	expected := []string{"Submit", "<div>Container</div>"}
 
 	result := getComponentInnerContent(components)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, but got %v", expected, result)
+	}
+}
+
+func TestGetComponentInnerContentBlock(t *testing.T) {
+	example := []string{`<ui-layout>
+    This is some content
+</ui-layout>`}
+
+	expected := []string{`
+    This is some content
+`}
+
+	result := getComponentInnerContent(example)
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("Expected %v, but got %v", expected, result)
