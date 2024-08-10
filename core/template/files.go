@@ -2,9 +2,8 @@ package template
 
 import (
 	"errors"
+	"fmt"
 	"os"
-	"path/filepath"
-	"runtime"
 	"strings"
 )
 
@@ -58,8 +57,10 @@ func getContent(filepath string) (string, error) {
 //
 // Since: 0.1.0
 func getLibraryRoot() string {
-	_, b, _, _ := runtime.Caller(0)
-	root := filepath.Join(filepath.Dir(b), "../..")
+	root, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error getting current working directory:", err)
+	}
 
 	return root
 }
