@@ -2,9 +2,6 @@ package template
 
 import (
 	"strings"
-    "os"
-    "fmt"
-    "path/filepath"
 )
 
 // Parse the lamb file
@@ -17,63 +14,29 @@ import (
 // - error: if something goes wrong
 //
 // Since: 0.1.0
-func ParseLamb(filepath string) (string, error) {
+func ParseLamb(filepath string, componentDir string) (string, error) {
 	content, err := getContent(filepath)
 	if err != nil {
 		return "", err
 	}
 
 	content = replaceSyntax(content)
-	closingComponents := getSelfClosingUIComponents(content)
+	closingComponents := getSelfClosingUIComponents(content, componentDir)
 	for _, closingComponent := range closingComponents {
-		content, err = replaceSelfClosingComponents(&closingComponent, content)
+		content, err = replaceSelfClosingComponents(&closingComponent, content, componentDir)
 		if err != nil {
 			return "", err
 		}
 	}
-	wrappedComponents := getWrappedUIComponents(content)
+	wrappedComponents := getWrappedUIComponents(content, componentDir)
 	for _, wrappedComponent := range wrappedComponents {
-		content, err = replaceWrappedComponents(&wrappedComponent, content)
+		content, err = replaceWrappedComponents(&wrappedComponent, content, componentDir)
 		if err != nil {
 			return "", err
 		}
 	}
 
 	return content, nil
-}
-
-func CompileLamb(filePath string) error {
-	// Parse the file to get the content
-	parsedContent, err := ParseLamb(filePath)
-	if err != nil {
-		return err
-	}
-
-	// Define the .cache folder path
-	cacheDir := ".cache"
-
-	// Create the .cache directory if it doesn't exist
-	if _, err := os.Stat(cacheDir); os.IsNotExist(err) {
-		err = os.Mkdir(cacheDir, os.ModePerm)
-		if err != nil {
-			return fmt.Errorf("failed to create .cache directory: %w", err)
-		}
-	}
-
-	// Remove the ".lamb" from the filename and replace it with ".html"
-	outputFileName := strings.TrimSuffix(filepath.Base(filePath), ".lamb.html") + ".html"
-
-	// Define the path for the compiled .html file
-	outputFilePath := filepath.Join(cacheDir, outputFileName)
-
-	// Write the parsed content to the .html file in the .cache directory
-	err = os.WriteFile(outputFilePath, []byte(parsedContent), 0644)
-	if err != nil {
-		return fmt.Errorf("failed to write compiled file: %w", err)
-	}
-
-	fmt.Printf("Compiled file written to %s\n", outputFilePath)
-	return nil
 }
 
 // Replace self closing component syntax
@@ -88,8 +51,8 @@ func CompileLamb(filePath string) error {
 // - error: if something goes wrong
 //
 // Since: 0.1.0
-func replaceSelfClosingComponents(component *SelfClosingUIComponent, content string) (string, error) {
-	componentContent, err := ParseLamb(component.ComponentFilePath)
+func replaceSelfClosingComponents(component *SelfClosingUIComponent, content string, componentDir string) (string, error) {
+	componentContent, err := ParseLamb(component.ComponentFilePath, componentDir)
 	if err != nil {
 		return "", err
 	}
@@ -112,8 +75,8 @@ func replaceSelfClosingComponents(component *SelfClosingUIComponent, content str
 // - error: if something goes wrong
 //
 // Since: 0.1.0
-func replaceWrappedComponents(component *WrappedUIComponent, content string) (string, error) {
-	componentContent, err := ParseLamb(component.ComponentFilePath)
+func replaceWrappedComponents(component *WrappedUIComponent, content string, componentDir string) (string, error) {
+	componentContent, err := ParseLamb(component.ComponentFilePath, componentDir)
 	if err != nil {
 		return "", err
 	}

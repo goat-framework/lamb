@@ -3,6 +3,8 @@ package template
 import (
 	"errors"
 	"os"
+	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -47,4 +49,17 @@ func getContent(filepath string) (string, error) {
 	}
 
 	return string(content), nil
+}
+
+// Gets the library root path
+//
+// Returns:
+// - string
+//
+// Since: 0.1.0
+func getLibraryRoot() string {
+	_, b, _, _ := runtime.Caller(0)
+	root := filepath.Join(filepath.Dir(b), "../..")
+
+	return root
 }
